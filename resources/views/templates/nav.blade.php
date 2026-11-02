@@ -192,7 +192,7 @@
             />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-light">ZieMarket</span>
+            <span class="brand-text fw-light">Market</span>
             <!--end::Brand Text-->
           </a>
           <!--end::Brand Link-->
