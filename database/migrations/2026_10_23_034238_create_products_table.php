@@ -17,7 +17,7 @@ return new class extends Migration
             $table->String('name');
             $table->text('description');
             $table->bigInteger('price');
-            $table->integer('strock')->default(0);
+            $table->integer('stock')->default(0);
             $table->timestamps();
         });
     }

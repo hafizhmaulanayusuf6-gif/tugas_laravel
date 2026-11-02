@@ -186,7 +186,7 @@
           <a href="./index.html" class="brand-link">
             <!--begin::Brand Image-->
             <img
-              src="assets/assets/img/AdminLTELogo.png"
+              src="{{ asset('assets/assets/img/AdminLTELogo.png') }}"
               alt="AdminLTE Logo"
               class="brand-image opacity-75 shadow"
             />
@@ -254,7 +254,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./widgets/cards.html" class="nav-link">
+                    <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Products</p>
                     </a>

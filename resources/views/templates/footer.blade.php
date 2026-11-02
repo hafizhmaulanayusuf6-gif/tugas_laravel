@@ -31,7 +31,7 @@
       crossorigin="anonymous"
     ></script>
     <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
-    <script src="assets/js/adminlte.js"></script>
+    <script src="{{ asset('assets/js/adminlte.js') }}"></script>
     <!--end::Required Plugin(AdminLTE)-->
     <!--begin::OverlayScrollbars Configure-->
     <script>
