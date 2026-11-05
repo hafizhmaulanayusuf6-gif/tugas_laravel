@@ -232,8 +232,12 @@
                     Dashboard
                   </p>
                 </a>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
+              </li>
+              @php
+                $masterDataActive = request()->routeIs('members.*', 'categories.*', 'products.*', 'users.*');
+              @endphp
+              <li @class(['nav-item', 'menu-open' => $masterDataActive])>
+                <a href="#" @class(['nav-link', 'active' => $masterDataActive])>
                   <i class="nav-icon bi bi-box-seam-fill"></i>
                   <p>
                     Master Data
@@ -242,13 +246,13 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="./widgets/small-box.html" class="nav-link">
+                    <a href="{{ route('members.index') }}" class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Member</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./widgets/info-box.html" class="nav-link">
+                    <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Categories</p>
                     </a>
@@ -260,7 +264,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./widgets/social.html" class="nav-link">
+                    <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>User</p>
                     </a>
@@ -316,8 +320,10 @@
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Members</p>
                     </a>
+                  </li>
                 </ul>
               </li>
+            </ul>
             <!--end::Sidebar Menu-->
 
             <!-- Docs CTA (bottom of sidebar) -->
