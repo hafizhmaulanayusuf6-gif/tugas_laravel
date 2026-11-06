@@ -13,6 +13,15 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Daftar role: nilai di database => label di tampilan.
+     * SESUAIKAN dengan role dari dosen (cukup ubah di sini).
+     */
+    public const ROLES = [
+        'admin' => 'Admin',
+        'kasir' => 'Kasir',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -21,6 +30,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**

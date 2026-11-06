@@ -1,4 +1,4 @@
-{{-- Partial field produk. Variabel: $mode ('create' atau 'edit') --}}
+{{-- Partial field produk. Variabel: $mode ('create' atau 'edit'), $categories --}}
 @php
     $isActive = old('form_mode') === $mode;
     $value = fn (string $field, $default = null) => $isActive ? old($field) : $default;
@@ -23,10 +23,32 @@
 
 <div class="mb-3">
   <label for="{{ $mode }}_description" class="form-label">Deskripsi</label>
-  <textarea id="{{ $mode }}_description" name="description" rows="4"
+  <textarea id="{{ $mode }}_description" name="description" rows="3"
             @class(['form-control', 'is-invalid' => $hasError('description')])>{{ $value('description') }}</textarea>
   @if ($hasError('description'))
     <div class="invalid-feedback">{{ $errors->first('description') }}</div>
+  @endif
+</div>
+
+<div class="mb-3">
+  <label for="{{ $mode }}_category_id" class="form-label">Kategori</label>
+  <select id="{{ $mode }}_category_id" name="category_id"
+          @class(['form-select', 'is-invalid' => $hasError('category_id')])>
+    <option value="">-- Pilih Kategori --</option>
+    @foreach ($categories as $category)
+      <option value="{{ $category->id }}" @selected((string) $value('category_id') === (string) $category->id)>
+        {{ $category->name }}
+      </option>
+    @endforeach
+  </select>
+  @if ($hasError('category_id'))
+    <div class="invalid-feedback">{{ $errors->first('category_id') }}</div>
+  @endif
+  @if ($categories->isEmpty())
+    <div class="form-text text-warning">
+      Belum ada kategori. Tambahkan dulu di halaman
+      <a href="{{ route('categories.index') }}">Categories</a>.
+    </div>
   @endif
 </div>
 
@@ -56,7 +78,15 @@
 </div>
 
 <div class="mb-1">
-  <label for="{{ $mode }}_image" class="form-label">Gambar</label>
+  <label for="{{ $mode }}_image" class="form-label">Gambar (opsional)</label>
+
+  @if ($mode === 'edit')
+    <div>
+      <img id="edit_image_preview" src="" alt="Gambar saat ini"
+           class="rounded mb-2 d-none" style="width: 100px; height: 100px; object-fit: cover;">
+    </div>
+  @endif
+
   <input type="file" id="{{ $mode }}_image" name="image"
          accept=".jpg,.jpeg,.png,.webp"
          @class(['form-control', 'is-invalid' => $hasError('image')])>
