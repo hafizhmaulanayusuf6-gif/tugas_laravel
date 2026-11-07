@@ -271,8 +271,11 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
+              @php
+                $transactionsActive = request()->routeIs('orders.*', 'history.*');
+              @endphp
+              <li @class(['nav-item', 'menu-open' => $transactionsActive])>
+                <a href="#" @class(['nav-link', 'active' => $transactionsActive])>
                   <i class="nav-icon bi bi-shop"></i>
                   <p>
                     Transactions
@@ -281,13 +284,13 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="./layout/unfixed-sidebar.html" class="nav-link">
+                    <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Order</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./layout/fixed-sidebar.html" class="nav-link">
+                    <a href="{{ route('history.index') }}" class="nav-link {{ request()->routeIs('history.*') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>History</p>
                     </a>
