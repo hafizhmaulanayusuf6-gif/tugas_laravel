@@ -297,8 +297,11 @@
                   </li>
                 </ul>
               </li>
-              <li class="nav-item">
-                <a href="#" class="nav-link">
+              @php
+                $reportsActive = request()->routeIs('reports.*');
+              @endphp
+              <li @class(['nav-item', 'menu-open' => $reportsActive])>
+                <a href="#" @class(['nav-link', 'active' => $reportsActive])>
                   <i class="nav-icon bi bi-clipboard"></i>
                   <p>
                     Reports
@@ -307,19 +310,19 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="./UI/general.html" class="nav-link">
+                    <a href="{{ route('reports.transactions') }}" class="nav-link {{ request()->routeIs('reports.transactions') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Transactions</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./UI/icons.html" class="nav-link">
+                    <a href="{{ route('reports.products') }}" class="nav-link {{ request()->routeIs('reports.products') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Products</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./UI/timeline.html" class="nav-link">
+                    <a href="{{ route('reports.members') }}" class="nav-link {{ request()->routeIs('reports.members') ? 'active' : '' }}">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Members</p>
                     </a>
