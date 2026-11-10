@@ -88,10 +88,21 @@
                   <div class="card-body">
                     <div class="mb-3">
                       <label for="customer" class="form-label">Pelanggan</label>
-                      <select id="customer" class="form-select" disabled>
-                        <option>Pembeli umum</option>
-                        <option>Member</option>
+                      <select id="customer" name="member_id" class="form-select">
+                        <option value="">Pembeli umum</option>
+                        @foreach ($members as $member)
+                          <option value="{{ $member->id }}" data-phone="{{ $member->phone }}">
+                            {{ $member->name }}
+                          </option>
+                        @endforeach
                       </select>
+                      <div id="customer_info" class="form-text">Tanpa data member.</div>
+                      @if ($members->isEmpty())
+                        <div class="form-text text-warning">
+                          Belum ada member aktif. Tambahkan di
+                          <a href="{{ route('members.index') }}">Master Data → Member</a>.
+                        </div>
+                      @endif
                     </div>
 
                     <div class="table-responsive">
@@ -132,4 +143,21 @@
           </div>
         </div>
         <!--end::App Content-->
+
+        <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('customer');
+    const info = document.getElementById('customer_info');
+
+    function updateInfo() {
+      const option = select.options[select.selectedIndex];
+      info.textContent = option.value
+        ? 'No. telepon: ' + option.dataset.phone
+        : 'Tanpa data member.';
+    }
+
+    select.addEventListener('change', updateInfo);
+    updateInfo(); // sinkronkan jika browser memulihkan pilihan setelah refresh
+  });
+</script>
 @endsection
