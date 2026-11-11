@@ -6,12 +6,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\TransactionReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/products');
 
 Route::view('/dashboard', 'dashboard.index')->name('dashboard.index');
-Route::view('/reports/transactions', 'reports.transactions')->name('reports.transactions');
+Route::get('/reports/transactions', [TransactionReportController::class, 'index'])->name('reports.transactions');
 Route::view('/reports/products', 'reports.products')->name('reports.products');
 Route::view('/reports/members', 'reports.members')->name('reports.members');
 
