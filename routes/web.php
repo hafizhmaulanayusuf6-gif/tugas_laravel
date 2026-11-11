@@ -16,6 +16,7 @@ Route::view('/reports/products', 'reports.products')->name('reports.products');
 Route::view('/reports/members', 'reports.members')->name('reports.members');
 
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
 
 Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
 Route::resource('members', MemberController::class)->except(['create', 'edit', 'show']);

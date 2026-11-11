@@ -57,6 +57,13 @@ class MemberController extends Controller
 
     public function destroy(Member $member): RedirectResponse
     {
+
+        if ($member->orders()->exists()) {
+            return redirect()
+                ->route('members.index')
+                ->with('error', 'Member sudah memiliki transaksi dan tidak dapat dihapus.');
+        }
+
         try {
             $member->delete();
         } catch (\Throwable $e) {

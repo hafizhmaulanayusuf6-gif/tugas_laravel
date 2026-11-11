@@ -105,6 +105,12 @@ class ProductController extends Controller
                 ->with('error', 'Produk gagal dihapus.');
         }
 
+        if ($product->orderItems()->exists()) {
+            return redirect()
+                ->route('products.index')
+                ->with('error', 'Produk sudah pernah terjual dan tidak dapat dihapus.');
+        }
+
         // Record sudah terhapus: baru hapus file gambarnya.
         if ($path) {
             Storage::disk('public')->delete($path);
