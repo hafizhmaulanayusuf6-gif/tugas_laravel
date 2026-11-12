@@ -1,4 +1,4 @@
-@extends('templates.layoutApp')
+﻿@extends('templates.layoutApp')
 
 @section('content')
         <!--begin::App Content Header-->
@@ -24,15 +24,6 @@
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container-fluid">
-            @if ($errors->any())
-              <div class="alert alert-danger" role="alert">
-                <ul class="mb-0">
-                  @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                  @endforeach
-                </ul>
-              </div>
-            @endif
 
             <!--begin::Date Filter-->
             <div class="card mb-3">
@@ -133,7 +124,7 @@
                       @if ($startDate || $endDate)
                         Periode:
                         {{ $startDate ? \Illuminate\Support\Carbon::parse($startDate)->format('d/m/Y') : 'Awal' }}
-                        –
+                        â€“
                         {{ $endDate ? \Illuminate\Support\Carbon::parse($endDate)->format('d/m/Y') : 'Sekarang' }}
                       @else
                         Semua Periode
@@ -200,3 +191,4 @@
         </div>
         <!--end::App Content-->
 @endsection
+

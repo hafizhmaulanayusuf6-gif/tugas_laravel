@@ -1,4 +1,4 @@
-@extends('templates.layoutApp')
+﻿@extends('templates.layoutApp')
 
 @section('content')
   <!--begin::App Content Header-->
@@ -24,15 +24,6 @@
   <!--begin::App Content-->
   <div class="app-content">
     <div class="container-fluid">
-      @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-          <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-        </div>
-      @endif
 
       <!--begin::Filters-->
       <div class="card mb-3">
@@ -201,3 +192,4 @@
   </div>
   <!--end::App Content-->
 @endsection
+

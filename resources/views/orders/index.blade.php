@@ -1,4 +1,4 @@
-@extends('templates.layoutApp')
+﻿@extends('templates.layoutApp')
 
 @section('content')
         <!--begin::App Content Header-->
@@ -23,31 +23,6 @@
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container-fluid">
-
-            {{-- Notifikasi --}}
-            @if (session('success'))
-              <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            @endif
-
-            @if (session('error'))
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            @endif
-
-            @if ($errors->any())
-              <div class="alert alert-danger" role="alert">
-                <ul class="mb-0">
-                  @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                  @endforeach
-                </ul>
-              </div>
-            @endif
 
             <div class="row">
 
@@ -96,7 +71,7 @@
                       @empty
                         <div class="col-12 text-center text-muted py-4">
                           Belum ada produk. Tambahkan dulu di
-                          <a href="{{ route('products.index') }}">Master Data → Products</a>.
+                          <a href="{{ route('products.index') }}">Master Data â†’ Products</a>.
                         </div>
                       @endforelse
                     </div>
@@ -142,7 +117,7 @@
                         @if ($members->isEmpty())
                           <div class="form-text text-warning">
                             Belum ada member aktif. Tambahkan di
-                            <a href="{{ route('members.index') }}">Master Data → Member</a>.
+                            <a href="{{ route('members.index') }}">Master Data â†’ Member</a>.
                           </div>
                         @endif
                       </div>

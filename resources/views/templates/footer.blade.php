@@ -1,4 +1,4 @@
- <!--begin::Footer-->
+﻿ <!--begin::Footer-->
       <footer class="app-footer">
         <!--begin::To the end-->
         <div class="float-end d-none d-sm-inline">Anything you want</div>
@@ -66,11 +66,24 @@
 
     <!--begin::Color Mode Toggle-->
     <!-- The light/dark/auto switcher ships in adminlte.js as the ColorMode
-     module (since 4.1) — no page script needed. Only the no-flash snippet
+     module (since 4.1) â€” no page script needed. Only the no-flash snippet
      in <head> stays inline, because it must run before first paint. -->
     <!--end::Color Mode Toggle-->
 
-    <!--end::Script-->
+    <!-- SWEETALERT2_FLASH_DATA_START -->
+    @php
+        $appFlashData = [
+            'success' => session('success'),
+            'successPopup' => session('success_popup'),
+            'error' => session('error'),
+            'validationErrors' => $errors->all(),
+        ];
+    @endphp
+
+    <script>
+        window.AppFlash = {{ \Illuminate\Support\Js::from($appFlashData) }};
+    </script>
+    <!-- SWEETALERT2_FLASH_DATA_END -->
+
   </body>
-  <!--end::Body-->
 </html>

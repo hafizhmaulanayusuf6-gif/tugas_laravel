@@ -1,4 +1,4 @@
-@extends('templates.layoutApp')
+﻿@extends('templates.layoutApp')
 
 @section('content')
         <!--begin::App Content Header-->
@@ -23,21 +23,6 @@
         <!--begin::App Content-->
         <div class="app-content">
           <div class="container-fluid">
-
-            {{-- Notifikasi --}}
-            @if (session('success'))
-              <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            @endif
-
-            @if (session('error'))
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            @endif
 
             <div class="row">
               <div class="col-12">
@@ -74,7 +59,7 @@
                                   <i class="bi bi-pencil-square"></i> Edit
                                 </button>
                                 <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-toggle="modal" data-bs-target="#deleteCategoryModal"
+                                        data-swal-delete="deleteCategoryForm"
                                         data-id="{{ $category->id }}"
                                         data-name="{{ $category->name }}">
                                   <i class="bi bi-trash"></i> Hapus

@@ -116,7 +116,7 @@ class OrderController extends Controller
 
         return redirect()
             ->route('orders.index')
-            ->with('success', sprintf(
+            ->with('success_popup', sprintf(
                 'Transaksi %s berhasil. Total Rp %s, kembalian Rp %s.',
                 $order->invoice_number,
                 number_format($order->total, 0, ',', '.'),

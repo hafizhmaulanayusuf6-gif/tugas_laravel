@@ -226,11 +226,9 @@
               id="navigation"
             >
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('dashboard.index') }}" class="nav-link {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
                   <i class="nav-icon bi bi-speedometer"></i>
-                  <p>
-                    Dashboard
-                  </p>
+                  <p>Dashboard</p>
                 </a>
               </li>
               @php
