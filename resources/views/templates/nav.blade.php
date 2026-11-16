@@ -1,347 +1,100 @@
-      <!--begin::Header-->
-      <nav class="app-header navbar navbar-expand bg-body">
-        <!--begin::Container-->
-        <div class="container-fluid">
-          <!--begin::Start Navbar Links-->
-          <ul class="navbar-nav">
+<nav class="app-header navbar navbar-expand bg-body">
+    <div class="container-fluid">
+        <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link"
-                data-lte-toggle="sidebar"
-                href="#"
-                role="button"
-                aria-label="Toggle sidebar">
-                <i class="bi bi-list"></i>
-              </a>
+                <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button" aria-label="Toggle sidebar"><i class="bi bi-list"></i></a>
             </li>
-          </ul>
-          <!--end::Start Navbar Links-->
+        </ul>
 
-          <!--begin::Navbar Search-->
-          <form
-            class="navbar-search d-none d-xl-block ms-3"
-            role="search"
-            action="./pages/search-results.html"
-          >
-            <label for="navbar-search-input" class="visually-hidden">Search</label>
-            <div class="navbar-search-field">
-              <input
-                type="search"
-                id="navbar-search-input"
-                name="q"
-                class="form-control"
-                placeholder="Search…"
-                autocomplete="off"
-              />
-              <button class="navbar-search-submit" type="submit" aria-label="Submit search">
-                <i class="bi bi-search" aria-hidden="true"></i>
-              </button>
-            </div>
-          </form>
-          <!--end::Navbar Search-->
-
-          <!--begin::End Navbar Links-->
-          <ul class="navbar-nav ms-auto">
-            <!--begin::Search (small screens: the field above is hidden, so link to the search page)-->
-            <li class="nav-item d-xl-none">
-              <a class="nav-link" href="./pages/search-results.html" aria-label="Search">
-                <i class="bi bi-search" aria-hidden="true"></i>
-              </a>
-            </li>
-            <!--end::Search-->
-
-            <!--begin::Fullscreen Toggle-->
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="#"
-                data-lte-toggle="fullscreen"
-                aria-label="Toggle fullscreen"
-              >
-                <i data-lte-icon="maximize" class="bi bi-arrows-fullscreen"></i>
-                <i data-lte-icon="minimize" class="bi bi-fullscreen-exit d-none"></i>
-              </a>
-            </li>
-            <!--end::Fullscreen Toggle-->
-
-            <!--begin::Color Mode Toggle (#6010)-->
+        <ul class="navbar-nav ms-auto align-items-center">
             <li class="nav-item dropdown">
-              <a
-                class="nav-link"
-                href="#"
-                id="bd-theme"
-                aria-label="Toggle color scheme"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="bi bi-sun-fill" data-lte-theme-icon="light"></i>
-                <i class="bi bi-moon-fill d-none" data-lte-theme-icon="dark"></i>
-                <i class="bi bi-circle-half d-none" data-lte-theme-icon="auto"></i>
-              </a>
-              <ul
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="bd-theme"
-                style="--bs-dropdown-min-width: 8rem"
-              >
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item d-flex align-items-center"
-                    data-bs-theme-value="light"
-                    aria-pressed="false"
-                  >
-                    <i class="bi bi-sun-fill me-2"></i>
-                    Light
-                    <i class="bi bi-check-lg ms-auto d-none"></i>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item d-flex align-items-center"
-                    data-bs-theme-value="dark"
-                    aria-pressed="false"
-                  >
-                    <i class="bi bi-moon-fill me-2"></i>
-                    Dark
-                    <i class="bi bi-check-lg ms-auto d-none"></i>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    class="dropdown-item d-flex align-items-center active"
-                    data-bs-theme-value="auto"
-                    aria-pressed="true"
-                  >
-                    <i class="bi bi-circle-half me-2"></i>
-                    Auto
-                    <i class="bi bi-check-lg ms-auto d-none"></i>
-                  </button>
-                </li>
-              </ul>
+                <a href="#" class="nav-link dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center" style="width:2rem;height:2rem" aria-hidden="true">
+                        {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
+                    </span>
+                    <span class="d-none d-sm-inline">{{ auth()->user()->name }}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><h6 class="dropdown-header">{{ auth()->user()->name }}<br><small>{{ \App\Models\User::ROLES[auth()->user()->role] ?? 'User' }}</small></h6></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button class="dropdown-item text-danger" type="submit"><i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Logout</button>
+                        </form>
+                    </li>
+                </ul>
             </li>
-            <!--end::Color Mode Toggle-->
+        </ul>
+    </div>
+</nav>
 
-            <!--begin::User Menu Dropdown-->
-            <li class="nav-item dropdown user-menu">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <img
-                  src="./assets/img/user2-160x160.jpg"
-                  class="user-image rounded-circle shadow"
-                  alt="Alexander Pierce"
-                />
-                <span class="d-none d-xl-inline">Alexander Pierce</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                <!--begin::User Image-->
-                <li class="user-header text-bg-primary">
-                  <img
-                    src="./assets/img/user2-160x160.jpg"
-                    class="rounded-circle shadow"
-                    alt="Alexander Pierce"
-                  />
-                  <p>
-                    Alexander Pierce - Web Developer
-                    <small>Member since Nov. 2023</small>
-                  </p>
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <div class="sidebar-brand">
+        <a href="{{ auth()->user()->role === 'admin' ? route('dashboard.index') : route('orders.index') }}" class="brand-link">
+            <img src="{{ asset('assets/assets/img/AdminLTELogo.png') }}" alt="ZieMarket" class="brand-image opacity-75 shadow">
+            <span class="brand-text fw-light">ZieMarket</span>
+        </a>
+    </div>
+
+    <div class="sidebar-wrapper">
+        <nav class="mt-2" aria-label="Navigasi utama">
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" data-accordion="false" id="navigation">
+                @if (auth()->user()->role === 'admin')
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard.index') }}" class="nav-link {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
+                            <i class="nav-icon bi bi-speedometer"></i><p>Dashboard</p>
+                        </a>
+                    </li>
+                @endif
+
+                @php($masterDataActive = request()->routeIs('members.*', 'categories.*', 'products.*', 'users.*'))
+                <li @class(['nav-item', 'menu-open' => $masterDataActive])>
+                    <a href="#" @class(['nav-link', 'active' => $masterDataActive])><i class="nav-icon bi bi-box-seam-fill"></i><p>Master Data<i class="nav-arrow bi bi-chevron-right"></i></p></a>
+                    <ul class="nav nav-treeview">
+                        @if (auth()->user()->role === 'admin')
+                            <li class="nav-item"><a href="{{ route('members.index') }}" class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>Member</p></a></li>
+                        @endif
+                        <li class="nav-item"><a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>Categories</p></a></li>
+                        <li class="nav-item"><a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>Products</p></a></li>
+                        @if (auth()->user()->role === 'admin')
+                            <li class="nav-item"><a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>User</p></a></li>
+                        @endif
+                    </ul>
                 </li>
-                <!--end::User Image-->
-                <!--begin::Menu Body-->
-                <li class="user-body">
-                  <!--begin::Row-->
-                  <div class="row">
-                    <div class="col-4 text-center">
-                      <a href="#">Followers</a>
-                    </div>
-                    <div class="col-4 text-center">
-                      <a href="#">Sales</a>
-                    </div>
-                    <div class="col-4 text-center">
-                      <a href="#">Friends</a>
-                    </div>
-                  </div>
-                  <!--end::Row-->
+
+                @php($transactionsActive = request()->routeIs('orders.*', 'history.*'))
+                <li @class(['nav-item', 'menu-open' => $transactionsActive])>
+                    @if (auth()->user()->role === 'admin')
+                        <a href="#" @class(['nav-link', 'active' => $transactionsActive])><i class="nav-icon bi bi-shop"></i><p>Transactions<i class="nav-arrow bi bi-chevron-right"></i></p></a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"><a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>Kasir / Order</p></a></li>
+                            <li class="nav-item"><a href="{{ route('history.index') }}" class="nav-link {{ request()->routeIs('history.*') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>History</p></a></li>
+                        </ul>
+                    @else
+                        <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}"><i class="nav-icon bi bi-shop"></i><p>Kasir</p></a>
+                    @endif
                 </li>
-                <!--end::Menu Body-->
-                <!--begin::Menu Footer-->
-                <li class="user-footer">
-                  <a href="#" class="btn btn-outline-secondary">Profile</a>
-                  <a href="#" class="btn btn-outline-danger float-end">Sign out</a>
-                </li>
-                <!--end::Menu Footer-->
-              </ul>
-            </li>
-            <!--end::User Menu Dropdown-->
-          </ul>
-          <!--end::End Navbar Links-->
-        </div>
-        <!--end::Container-->
-      </nav>
-      <!--end::Header-->
-      <!--begin::Sidebar-->
-      <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
-        <!--begin::Sidebar Brand-->
-        <div class="sidebar-brand">
-          <!--begin::Brand Link-->
-          <a href="./index.html" class="brand-link">
-            <!--begin::Brand Image-->
-            <img
-              src="{{ asset('assets/assets/img/AdminLTELogo.png') }}"
-              alt="AdminLTE Logo"
-              class="brand-image opacity-75 shadow"
-            />
-            <!--end::Brand Image-->
-            <!--begin::Brand Text-->
-            <span class="brand-text fw-light">Market</span>
-            <!--end::Brand Text-->
-          </a>
-          <!--end::Brand Link-->
-        </div>
-        <!--end::Sidebar Brand-->
-        <!--begin::Sidebar Search-->
-        <div class="sidebar-search" role="search">
-          <label for="sidebar-search-input" class="visually-hidden">Filter menu</label>
-          <input
-            type="search"
-            id="sidebar-search-input"
-            class="form-control form-control-sm"
-            placeholder="Filter menu…"
-            autocomplete="off"
-            data-lte-toggle="sidebar-search"
-            data-lte-target="#navigation"
-          />
-          <p class="fs-7 text-secondary mt-2 mb-0" data-lte-search-empty role="status" hidden>
-            No matching pages.
-          </p>
-        </div>
-        <!--end::Sidebar Search-->
-        <!--begin::Sidebar Wrapper-->
-        <div class="sidebar-wrapper">
-          <nav class="mt-2" aria-label="Main navigation">
-            <!--begin::Sidebar Menu-->
-            <ul
-              class="nav sidebar-menu flex-column"
-              data-lte-toggle="treeview"
-              data-accordion="false"
-              id="navigation"
-            >
-              <li class="nav-item">
-                <a href="{{ route('dashboard.index') }}" class="nav-link {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
-                  <i class="nav-icon bi bi-speedometer"></i>
-                  <p>Dashboard</p>
-                </a>
-              </li>
-              @php
-                $masterDataActive = request()->routeIs('members.*', 'categories.*', 'products.*', 'users.*');
-              @endphp
-              <li @class(['nav-item', 'menu-open' => $masterDataActive])>
-                <a href="#" @class(['nav-link', 'active' => $masterDataActive])>
-                  <i class="nav-icon bi bi-box-seam-fill"></i>
-                  <p>
-                    Master Data
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="{{ route('members.index') }}" class="nav-link {{ request()->routeIs('members.*') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Member</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('categories.index') }}" class="nav-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Categories</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('products.index') }}" class="nav-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Products</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('users.index') }}" class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>User</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              @php
-                $transactionsActive = request()->routeIs('orders.*', 'history.*');
-              @endphp
-              <li @class(['nav-item', 'menu-open' => $transactionsActive])>
-                <a href="#" @class(['nav-link', 'active' => $transactionsActive])>
-                  <i class="nav-icon bi bi-shop"></i>
-                  <p>
-                    Transactions
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="{{ route('orders.index') }}" class="nav-link {{ request()->routeIs('orders.*') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Order</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('history.index') }}" class="nav-link {{ request()->routeIs('history.*') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>History</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              @php
-                $reportsActive = request()->routeIs('reports.*');
-              @endphp
-              <li @class(['nav-item', 'menu-open' => $reportsActive])>
-                <a href="#" @class(['nav-link', 'active' => $reportsActive])>
-                  <i class="nav-icon bi bi-clipboard"></i>
-                  <p>
-                    Reports
-                    <i class="nav-arrow bi bi-chevron-right"></i>
-                  </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <a href="{{ route('reports.transactions') }}" class="nav-link {{ request()->routeIs('reports.transactions') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Transactions</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('reports.products') }}" class="nav-link {{ request()->routeIs('reports.products') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Products</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="{{ route('reports.members') }}" class="nav-link {{ request()->routeIs('reports.members') ? 'active' : '' }}">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Members</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
+
+                @if (auth()->user()->role === 'admin')
+                    @php($reportsActive = request()->routeIs('reports.*'))
+                    <li @class(['nav-item', 'menu-open' => $reportsActive])>
+                        <a href="#" @class(['nav-link', 'active' => $reportsActive])><i class="nav-icon bi bi-clipboard"></i><p>Reports<i class="nav-arrow bi bi-chevron-right"></i></p></a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item"><a href="{{ route('reports.transactions') }}" class="nav-link {{ request()->routeIs('reports.transactions') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>Transactions</p></a></li>
+                            <li class="nav-item"><a href="{{ route('reports.products') }}" class="nav-link {{ request()->routeIs('reports.products') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>Products</p></a></li>
+                            <li class="nav-item"><a href="{{ route('reports.members') }}" class="nav-link {{ request()->routeIs('reports.members') ? 'active' : '' }}"><i class="nav-icon bi bi-circle"></i><p>Members</p></a></li>
+                        </ul>
+                    </li>
+                @endif
             </ul>
-            <!--end::Sidebar Menu-->
 
-            <!-- Docs CTA (bottom of sidebar) -->
             <div class="p-3 mt-3 border-top border-secondary border-opacity-25">
-              <a
-                href="./docs/introduction.html"
-                class="btn btn-sm btn-danger w-100 d-flex align-items-center justify-content-center gap-2"
-              >
-                <i class="bi bi-power" aria-hidden="true"></i>
-                Logout
-              </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="btn btn-sm btn-danger w-100 d-flex align-items-center justify-content-center gap-2" type="submit"><i class="bi bi-power" aria-hidden="true"></i>Logout</button>
+                </form>
             </div>
-          </nav>
-        </div>
-        <!--end::Sidebar Wrapper-->
-      </aside>
-      <!--end::Sidebar-->
+        </nav>
+    </div>
+</aside>

@@ -10,21 +10,40 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\TransactionReportController;
 use App\Http\Controllers\MemberReportController;
 use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/products');
+Route::get('/', function () {
+    if (! Auth::check()) {
+        return redirect()->route('login');
+    }
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-Route::get('/reports/transactions', [TransactionReportController::class, 'index'])->name('reports.transactions');
-Route::get('/reports/products', [ProductReportController::class, 'index'])->name('reports.products');
-Route::get('/reports/members', [MemberReportController::class, 'index'])->name('reports.members');
+    return redirect()->route(Auth::user()->role === 'admin' ? 'dashboard.index' : 'orders.index');
+});
 
-Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [\App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    // route khusu admin
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/reports/transactions', [TransactionReportController::class, 'index'])->name('reports.transactions');
+        Route::get('/reports/products', [ProductReportController::class, 'index'])->name('reports.products');
+        Route::get('/reports/members', [MemberReportController::class, 'index'])->name('reports.members');
+        Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
-Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
-Route::resource('members', MemberController::class)->except(['create', 'edit', 'show']);
-Route::resource('products', ProductController::class)->except(['create', 'edit', 'show']);
-Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
+        Route::resource('members', MemberController::class)->except(['create', 'edit', 'show']);
+        Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);
+    });
+
+    // route untuk admin dan kasir
+    Route::middleware('role:admin,kasir')->group(function () {
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+
+        Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+        Route::resource('products', ProductController::class)->except(['create', 'edit', 'show']);
+    });
+});
+
+require __DIR__.'/auth.php';

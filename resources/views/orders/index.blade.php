@@ -114,12 +114,16 @@
                           @endforeach
                         </select>
                         <div id="customer_info" class="form-text">Tanpa data member.</div>
-                        @if ($members->isEmpty())
-                          <div class="form-text text-warning">
-                            Belum ada member aktif. Tambahkan di
-                            <a href="{{ route('members.index') }}">Master Data â†’ Member</a>.
-                          </div>
-                        @endif
+                          @if ($members->isEmpty())
+                            <div class="form-text text-warning">
+                              @if (auth()->user()->role === 'admin')
+                                Belum ada member aktif. Tambahkan di
+                                <a href="{{ route('members.index') }}">Master Data → Member</a>.
+                              @else
+                                Belum ada member aktif. Hubungi admin untuk menambahkannya.
+                              @endif
+                            </div>
+                          @endif
                       </div>
 
                       <div class="table-responsive">

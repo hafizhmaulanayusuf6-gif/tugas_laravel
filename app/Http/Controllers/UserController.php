@@ -45,6 +45,15 @@ class UserController extends Controller
     {
         $validated = $request->validate($this->rules($user), $this->messages(), $this->attributes());
 
+        if ($user->is($request->user()) && $validated['role'] !== 'admin') {
+            return back()->withInput()->with('error', 'Role akun admin yang sedang digunakan tidak dapat diubah.');
+        }
+
+        if ($user->role === 'admin' && $validated['role'] !== 'admin'
+            && User::where('role', 'admin')->count() <= 1) {
+            return back()->withInput()->with('error', 'Minimal harus ada satu akun admin.');
+        }
+
         // Password hanya diubah jika diisi; kosong berarti password lama dipertahankan.
         $data = Arr::except($validated, ['password']);
 
@@ -69,6 +78,14 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        if ($user->is(request()->user())) {
+            return redirect()->route('users.index')->with('error', 'Akun yang sedang digunakan tidak dapat dihapus.');
+        }
+
+        if ($user->role === 'admin' && User::where('role', 'admin')->count() <= 1) {
+            return redirect()->route('users.index')->with('error', 'Minimal harus ada satu akun admin.');
+        }
+
         try {
             $user->delete();
         } catch (\Throwable $e) {

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +12,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $email = env('INITIAL_ADMIN_EMAIL');
+        $password = env('INITIAL_ADMIN_PASSWORD');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        if (blank($email) || blank($password)) {
+            $this->command?->warn(
+                'INITIAL_ADMIN_EMAIL / INITIAL_ADMIN_PASSWORD belum diisi di .env, akun admin tidak dibuat.'
+            );
+
+            return;
+        }
+
+        $user = User::firstOrCreate(
+            ['email' => $email],
+            [
+                'name' => env('INITIAL_ADMIN_NAME', 'Administrator'),
+                'password' => $password,
+                'role' => 'admin',
+            ],
+        );
+
+        $this->command?->info(
+            $user->wasRecentlyCreated
+                ? "Akun admin dibuat: {$email}"
+                : "Akun {$email} sudah ada, tidak diubah."
+        );
     }
 }

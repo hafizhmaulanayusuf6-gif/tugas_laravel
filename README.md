@@ -7,6 +7,18 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## ZieMarket authentication
+
+Login uses Laravel Breeze authentication with the existing `admin` and `kasir` roles. Public registration is disabled. Admins can manage accounts from **Master Data → User**; a kasir can only open the cashier/order page. Admin routes are protected by server-side role middleware.
+
+For a fresh database, set `INITIAL_ADMIN_EMAIL` and a strong `INITIAL_ADMIN_PASSWORD` in the local `.env` file, then run:
+
+```sh
+php artisan migrate --seed
+```
+
+The seeder creates the initial admin only when both values are set. For an existing database, run `php artisan migrate`; users without a role are promoted to admin once so existing operators retain access. Do not commit `.env` or real credentials.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
