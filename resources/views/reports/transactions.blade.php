@@ -59,6 +59,10 @@
                     <a href="{{ route('reports.transactions') }}" class="btn btn-outline-secondary">
                       Reset
                     </a>
+                    <a href="{{ route('reports.transactions.export', request()->only('start_date', 'end_date')) }}"
+                       class="btn btn-success">
+                      <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                    </a>
                   </div>
                 </form>
               </div>

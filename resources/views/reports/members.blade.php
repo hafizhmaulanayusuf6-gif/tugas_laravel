@@ -1,4 +1,4 @@
-﻿@extends('templates.layoutApp')
+@extends('templates.layoutApp')
 
 @section('content')
         <!--begin::App Content Header-->
@@ -116,10 +116,18 @@
             <div class="row">
               <div class="col-12">
                 <div class="card">
-                  <div class="card-header">
+                  <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h3 class="card-title">Daftar Member</h3>
-                    <div class="card-tools text-muted small">
-                      {{ number_format($members->total(), 0, ',', '.') }} member ditemukan
+                    <div class="card-tools d-flex flex-wrap align-items-center gap-2">
+                      <span class="text-muted small">
+                        {{ number_format($members->total(), 0, ',', '.') }} member ditemukan
+                      </span>
+                      <a
+                        href="{{ route('reports.members.export', request()->only('search', 'status')) }}"
+                        class="btn btn-sm btn-success"
+                      >
+                        <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                      </a>
                     </div>
                   </div>
                   <div class="card-body p-0">
@@ -189,4 +197,3 @@
         </div>
         <!--end::App Content-->
 @endsection
-

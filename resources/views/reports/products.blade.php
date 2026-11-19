@@ -1,4 +1,4 @@
-﻿@extends('templates.layoutApp')
+@extends('templates.layoutApp')
 
 @section('content')
   <!--begin::App Content Header-->
@@ -115,14 +115,22 @@
       <div class="row">
         <div class="col-12">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
               <h3 class="card-title">Daftar Produk</h3>
-              <div class="card-tools text-muted small">
-                @if ($categoryId || $stockStatus !== 'all')
-                  Hasil sesuai filter yang dipilih
-                @else
-                  Semua Produk
-                @endif
+              <div class="card-tools d-flex flex-wrap align-items-center gap-2">
+                <span class="text-muted small">
+                  @if ($categoryId || $stockStatus !== 'all')
+                    Hasil sesuai filter yang dipilih
+                  @else
+                    Semua Produk
+                  @endif
+                </span>
+                <a
+                  href="{{ route('reports.products.export', request()->only('category_id', 'stock_status')) }}"
+                  class="btn btn-sm btn-success"
+                >
+                  <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                </a>
               </div>
             </div>
             <div class="card-body p-0">
@@ -192,4 +200,3 @@
   </div>
   <!--end::App Content-->
 @endsection
-
