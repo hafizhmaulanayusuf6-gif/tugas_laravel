@@ -3,7 +3,9 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -20,7 +22,9 @@ use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 abstract class StyledReportExport extends SafeExport implements
     WithEvents,
     WithColumnWidths,
-    WithTitle
+    WithTitle,
+    WithCustomCsvSettings,
+    WithStrictNullComparison
 {
     abstract protected function reportHeading(): string;
 
@@ -52,8 +56,23 @@ abstract class StyledReportExport extends SafeExport implements
         return $this->worksheetTitle();
     }
 
+    public function getCsvSettings(): array
+    {
+        return [
+            'delimiter' => ',',
+            'enclosure' => '"',
+            'line_ending' => "\r\n",
+            'use_bom' => true,
+            'output_encoding' => 'UTF-8',
+        ];
+    }
+
     public function registerEvents(): array
     {
+        if ($this->forCsv) {
+            return [];
+        }
+
         return [
             AfterSheet::class => function (AfterSheet $event): void {
                 $sheet = $event->sheet->getDelegate();

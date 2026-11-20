@@ -1,4 +1,4 @@
-﻿@extends('templates.layoutApp')
+@extends('templates.layoutApp')
 
 @section('content')
         <!--begin::App Content Header-->
@@ -32,7 +32,10 @@
               </div>
               <div class="card-body">
                 <form method="GET" action="{{ route('reports.transactions') }}" class="row g-3 align-items-end">
-                  <div class="col-md-4">
+                  @if ($search !== '')
+                    <input type="hidden" name="search" value="{{ $search }}">
+                  @endif
+                  <div class="col-md-6 col-xl">
                     <label for="start_date" class="form-label">Dari Tanggal</label>
                     <input
                       type="date"
@@ -42,7 +45,7 @@
                       value="{{ $startDate }}"
                     >
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6 col-xl">
                     <label for="end_date" class="form-label">Sampai Tanggal</label>
                     <input
                       type="date"
@@ -52,16 +55,20 @@
                       value="{{ $endDate }}"
                     >
                   </div>
-                  <div class="col-md-4 d-flex gap-2">
+                  <div class="col-12 col-xl-auto d-flex flex-wrap gap-2">
                     <button type="submit" class="btn btn-primary">
                       <i class="bi bi-filter me-1"></i> Terapkan
                     </button>
                     <a href="{{ route('reports.transactions') }}" class="btn btn-outline-secondary">
                       Reset
                     </a>
-                    <a href="{{ route('reports.transactions.export', request()->only('start_date', 'end_date')) }}"
+                    <a href="{{ route('reports.transactions.export', request()->only('start_date', 'end_date', 'search')) }}"
                        class="btn btn-success">
                       <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                    </a>
+                    <a href="{{ route('reports.transactions.export.csv', request()->only('start_date', 'end_date', 'search')) }}"
+                       class="btn btn-outline-success">
+                      <i class="bi bi-filetype-csv me-1"></i> Export CSV
                     </a>
                   </div>
                 </form>
@@ -124,15 +131,44 @@
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Daftar Transaksi</h3>
-                    <div class="card-tools text-muted small">
-                      @if ($startDate || $endDate)
-                        Periode:
-                        {{ $startDate ? \Illuminate\Support\Carbon::parse($startDate)->format('d/m/Y') : 'Awal' }}
-                        â€“
-                        {{ $endDate ? \Illuminate\Support\Carbon::parse($endDate)->format('d/m/Y') : 'Sekarang' }}
-                      @else
-                        Semua Periode
-                      @endif
+                    <div class="card-tools d-flex flex-wrap align-items-center gap-2">
+                      <span class="text-muted small">
+                        @if ($startDate || $endDate)
+                          Periode:
+                          {{ $startDate ? \Illuminate\Support\Carbon::parse($startDate)->format('d/m/Y') : 'Awal' }}
+                          &ndash;
+                          {{ $endDate ? \Illuminate\Support\Carbon::parse($endDate)->format('d/m/Y') : 'Sekarang' }}
+                        @else
+                          Semua Periode
+                        @endif
+                      </span>
+                      <form method="GET" action="{{ route('reports.transactions') }}" class="d-flex align-items-center">
+                        @if ($startDate)
+                          <input type="hidden" name="start_date" value="{{ $startDate }}">
+                        @endif
+                        @if ($endDate)
+                          <input type="hidden" name="end_date" value="{{ $endDate }}">
+                        @endif
+                        <div class="input-group input-group-sm" style="width: 240px;">
+                          <input
+                            type="search"
+                            name="search"
+                            class="form-control"
+                            placeholder="Cari invoice atau pelanggan..."
+                            value="{{ $search }}"
+                            aria-label="Cari transaksi"
+                          >
+                          <button type="submit" class="btn btn-outline-secondary" title="Cari">
+                            <i class="bi bi-search"></i>
+                          </button>
+                          @if ($search !== '')
+                            <a href="{{ route('reports.transactions', request()->only('start_date', 'end_date')) }}"
+                               class="btn btn-outline-secondary" title="Reset pencarian">
+                              <i class="bi bi-x-lg"></i>
+                            </a>
+                          @endif
+                        </div>
+                      </form>
                     </div>
                   </div>
                   <div class="card-body p-0">
@@ -165,8 +201,8 @@
                           @empty
                             <tr>
                               <td colspan="8" class="text-center text-muted py-4">
-                                @if ($startDate || $endDate)
-                                  Tidak ada transaksi pada periode yang dipilih.
+                                @if ($search !== '' || $startDate || $endDate)
+                                  Tidak ada transaksi yang sesuai dengan filter atau pencarian.
                                 @else
                                   Belum ada data transaksi.
                                 @endif

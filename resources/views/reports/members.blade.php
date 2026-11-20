@@ -32,7 +32,7 @@
               </div>
               <div class="card-body">
                 <form method="GET" action="{{ route('reports.members') }}" class="row g-3 align-items-end">
-                  <div class="col-md-6">
+                  <div class="col-md-7 col-xl">
                     <label for="search" class="form-label">Cari Member</label>
                     <input
                       type="search"
@@ -43,7 +43,7 @@
                       value="{{ $search }}"
                     >
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-5 col-xl-3">
                     <label for="status" class="form-label">Status</label>
                     <select name="status" id="status" class="form-select">
                       <option value="">Semua Status</option>
@@ -52,11 +52,23 @@
                       @endforeach
                     </select>
                   </div>
-                  <div class="col-md-3 d-flex gap-2">
+                  <div class="col-12 col-xl-auto d-flex flex-wrap gap-2">
                     <button type="submit" class="btn btn-primary">
                       <i class="bi bi-search me-1"></i> Terapkan
                     </button>
                     <a href="{{ route('reports.members') }}" class="btn btn-outline-secondary">Reset</a>
+                    <a
+                      href="{{ route('reports.members.export', request()->only('search', 'status')) }}"
+                      class="btn btn-success"
+                    >
+                      <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                    </a>
+                    <a
+                      href="{{ route('reports.members.export.csv', request()->only('search', 'status')) }}"
+                      class="btn btn-outline-success"
+                    >
+                      <i class="bi bi-filetype-csv me-1"></i> Export CSV
+                    </a>
                   </div>
                 </form>
               </div>
@@ -116,18 +128,10 @@
             <div class="row">
               <div class="col-12">
                 <div class="card">
-                  <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                  <div class="card-header">
                     <h3 class="card-title">Daftar Member</h3>
-                    <div class="card-tools d-flex flex-wrap align-items-center gap-2">
-                      <span class="text-muted small">
-                        {{ number_format($members->total(), 0, ',', '.') }} member ditemukan
-                      </span>
-                      <a
-                        href="{{ route('reports.members.export', request()->only('search', 'status')) }}"
-                        class="btn btn-sm btn-success"
-                      >
-                        <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
-                      </a>
+                    <div class="card-tools text-muted small">
+                      {{ number_format($members->total(), 0, ',', '.') }} member ditemukan
                     </div>
                   </div>
                   <div class="card-body p-0">

@@ -10,11 +10,19 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $categories = Category::orderBy('name')->paginate(10);
+        $search = trim((string) $request->query('search', ''));
 
-        return view('categories.index', compact('categories'));
+        $categories = Category::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('categories.index', compact('categories', 'search'));
     }
 
     public function store(Request $request): RedirectResponse

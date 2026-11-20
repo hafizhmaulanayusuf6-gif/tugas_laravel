@@ -28,6 +28,28 @@
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Riwayat Transaksi</h3>
+                    <div class="card-tools d-flex flex-wrap align-items-center gap-2">
+                      <form method="GET" action="{{ route('history.index') }}" class="d-flex align-items-center">
+                        <div class="input-group input-group-sm" style="width: 260px;">
+                          <input
+                            type="search"
+                            name="search"
+                            class="form-control"
+                            placeholder="Cari invoice, pelanggan, produk..."
+                            value="{{ $search }}"
+                            aria-label="Cari riwayat transaksi"
+                          >
+                          <button type="submit" class="btn btn-outline-secondary" title="Cari">
+                            <i class="bi bi-search"></i>
+                          </button>
+                          @if ($search !== '')
+                            <a href="{{ route('history.index') }}" class="btn btn-outline-secondary" title="Reset pencarian">
+                              <i class="bi bi-x-lg"></i>
+                            </a>
+                          @endif
+                        </div>
+                      </form>
+                    </div>
                   </div>
                   <div class="card-body p-0">
                     <div class="table-responsive">
@@ -68,14 +90,21 @@
                                         data-customer="{{ $order->member?->name ?? 'Pembeli umum' }}"
                                         data-total="{{ $order->total }}"
                                         data-paid="{{ $order->paid_amount }}"
-                                        data-items="{{ $items->toJson() }}">
+                                        data-items="{{ $items->toJson() }}"
+                                        data-receipt-url="{{ route('history.receipt', $order) }}">
                                   <i class="bi bi-eye"></i> Detail
                                 </button>
                               </td>
                             </tr>
                           @empty
                             <tr>
-                              <td colspan="7" class="text-center text-muted py-4">Belum ada riwayat transaksi.</td>
+                              <td colspan="7" class="text-center text-muted py-4">
+                                @if ($search !== '')
+                                  Tidak ada transaksi yang sesuai dengan pencarian "{{ $search }}".
+                                @else
+                                  Belum ada riwayat transaksi.
+                                @endif
+                              </td>
                             </tr>
                           @endforelse
                         </tbody>
@@ -142,6 +171,9 @@
         </dl>
       </div>
       <div class="modal-footer">
+        <a href="#" id="detail_print_receipt" target="_blank" rel="noopener" class="btn btn-primary">
+          <i class="bi bi-printer me-1"></i> Cetak Struk
+        </a>
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
       </div>
     </div>
@@ -152,6 +184,7 @@
   document.addEventListener('DOMContentLoaded', function () {
     const modalEl = document.getElementById('detailOrderModal');
     const itemsBody = document.getElementById('detail_items');
+    const printReceiptLink = document.getElementById('detail_print_receipt');
     const fmt = new Intl.NumberFormat('id-ID');
     const rupiah = function (n) { return 'Rp ' + fmt.format(n); };
 
@@ -172,6 +205,7 @@
       document.getElementById('detail_total').textContent = rupiah(total);
       document.getElementById('detail_paid').textContent = rupiah(paid);
       document.getElementById('detail_change').textContent = rupiah(paid - total);
+      printReceiptLink.href = d.receiptUrl || '#';
 
       let items = [];
       try { items = JSON.parse(d.items); } catch (e) { items = []; }

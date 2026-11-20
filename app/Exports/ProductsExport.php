@@ -19,8 +19,11 @@ class ProductsExport extends StyledReportExport implements
     public function __construct(
         private Builder $query,
         private ?string $categoryName = null,
-        private string $stockStatus = 'all'
+        private string $stockStatus = 'all',
+        bool $forCsv = false,
+        private string $search = ''
     ) {
+        $this->forCsv = $forCsv;
     }
 
     public function query(): Builder
@@ -59,6 +62,10 @@ class ProductsExport extends StyledReportExport implements
 
     public function columnFormats(): array
     {
+        if ($this->forCsv) {
+            return [];
+        }
+
         return [
             'D' => '"Rp" #,##0;[Red]("Rp" #,##0);-',
             'E' => '#,##0;[Red](#,##0);-',
@@ -98,7 +105,13 @@ class ProductsExport extends StyledReportExport implements
             default => 'Semua status stok',
         };
 
-        return "Kategori: {$category} | Ketersediaan: {$stockLabel}";
+        $description = "Kategori: {$category} | Ketersediaan: {$stockLabel}";
+
+        if ($this->search !== '') {
+            $description .= " | Pencarian: {$this->search}";
+        }
+
+        return $description;
     }
 
     protected function lastColumn(): string

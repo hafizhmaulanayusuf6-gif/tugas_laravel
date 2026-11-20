@@ -13,16 +13,30 @@ use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $products = Product::with('category')->orderBy('name')->paginate(12);
+        $search = trim((string) $request->query('search', ''));
+
+        $products = Product::with('category')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($builder) use ($search) {
+                    $builder->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhereHas('category', function ($categoryQuery) use ($search) {
+                            $categoryQuery->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->orderBy('name')
+            ->paginate(12)
+            ->withQueryString();
 
         // Hanya member aktif yang bisa dipilih sebagai pelanggan.
         $members = Member::where('status', 'aktif')
             ->orderBy('name')
             ->get(['id', 'name', 'phone']);
 
-        return view('orders.index', compact('products', 'members'));
+        return view('orders.index', compact('products', 'members', 'search'));
     }
 
     public function store(Request $request): RedirectResponse

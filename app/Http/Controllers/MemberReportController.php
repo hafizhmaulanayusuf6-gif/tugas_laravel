@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Excel as ExcelFormat;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -42,8 +43,19 @@ class MemberReportController extends Controller
         ));
     }
 
-    /** Unduh seluruh member yang cocok dengan filter, bukan hanya halaman aktif. */
+    /** Unduh seluruh member yang cocok dengan filter dalam format Excel. */
     public function export(Request $request): BinaryFileResponse
+    {
+        return $this->downloadExport($request, false);
+    }
+
+    /** Unduh seluruh member yang cocok dengan filter dalam format CSV. */
+    public function exportCsv(Request $request): BinaryFileResponse
+    {
+        return $this->downloadExport($request, true);
+    }
+
+    private function downloadExport(Request $request, bool $asCsv): BinaryFileResponse
     {
         $validated = $this->validatedFilters($request);
         $search = trim($validated['search'] ?? '');
@@ -53,11 +65,13 @@ class MemberReportController extends Controller
             ->orderByDesc('created_at')
             ->orderByDesc('id');
 
-        $filename = 'laporan-member-' . now()->format('Ymd-His') . '.xlsx';
+        $extension = $asCsv ? 'csv' : 'xlsx';
+        $filename = 'laporan-member-' . now()->format('Ymd-His') . '.' . $extension;
 
         return Excel::download(
-            new MembersExport($query, $search, $status),
-            $filename
+            new MembersExport($query, $search, $status, $asCsv),
+            $filename,
+            $asCsv ? ExcelFormat::CSV : ExcelFormat::XLSX
         );
     }
 

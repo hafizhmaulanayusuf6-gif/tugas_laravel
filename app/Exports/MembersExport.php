@@ -21,8 +21,10 @@ class MembersExport extends StyledReportExport implements
     public function __construct(
         private Builder $query,
         private string $search = '',
-        private ?string $status = null
+        private ?string $status = null,
+        bool $forCsv = false
     ) {
+        $this->forCsv = $forCsv;
     }
 
     public function query(): Builder
@@ -56,12 +58,18 @@ class MembersExport extends StyledReportExport implements
             (int) $member->orders_count,
             (int) ($member->total_spending ?? 0),
             Member::STATUSES[$member->status] ?? ucfirst((string) $member->status),
-            $member->created_at ? Date::dateTimeToExcel($member->created_at) : null,
+            $this->forCsv
+                ? ($member->created_at?->format('d/m/Y') ?? '-')
+                : ($member->created_at ? Date::dateTimeToExcel($member->created_at) : null),
         ];
     }
 
     public function columnFormats(): array
     {
+        if ($this->forCsv) {
+            return [];
+        }
+
         return [
             'F' => '#,##0;[Red](#,##0);-',
             'G' => '"Rp" #,##0;[Red]("Rp" #,##0);-',

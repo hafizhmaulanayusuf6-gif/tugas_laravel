@@ -33,18 +33,25 @@ Route::middleware('auth')->group(function () {
             ->name('reports.transactions');
         Route::get('/reports/transactions/export', [TransactionReportController::class, 'export'])
             ->name('reports.transactions.export');
+        Route::get('/reports/transactions/export-csv', [TransactionReportController::class, 'exportCsv'])
+            ->name('reports.transactions.export.csv');
 
         Route::get('/reports/products', [ProductReportController::class, 'index'])
             ->name('reports.products');
         Route::get('/reports/products/export', [ProductReportController::class, 'export'])
             ->name('reports.products.export');
+        Route::get('/reports/products/export-csv', [ProductReportController::class, 'exportCsv'])
+            ->name('reports.products.export.csv');
 
         Route::get('/reports/members', [MemberReportController::class, 'index'])
             ->name('reports.members');
         Route::get('/reports/members/export', [MemberReportController::class, 'export'])
             ->name('reports.members.export');
+        Route::get('/reports/members/export-csv', [MemberReportController::class, 'exportCsv'])
+            ->name('reports.members.export.csv');
 
         Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+        Route::get('/history/{order}/receipt', [HistoryController::class, 'receipt'])->name('history.receipt');
 
         Route::resource('members', MemberController::class)->except(['create', 'edit', 'show']);
         Route::resource('users', UserController::class)->except(['create', 'edit', 'show']);

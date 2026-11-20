@@ -29,7 +29,27 @@
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Daftar User</h3>
-                    <div class="card-tools">
+                    <div class="card-tools d-flex flex-wrap align-items-center gap-2">
+                      <form method="GET" action="{{ route('users.index') }}" class="d-flex align-items-center">
+                        <div class="input-group input-group-sm" style="width: 240px;">
+                          <input
+                            type="search"
+                            name="search"
+                            class="form-control"
+                            placeholder="Cari user..."
+                            value="{{ $search }}"
+                            aria-label="Cari user"
+                          >
+                          <button type="submit" class="btn btn-outline-secondary" title="Cari">
+                            <i class="bi bi-search"></i>
+                          </button>
+                          @if ($search !== '')
+                            <a href="{{ route('users.index') }}" class="btn btn-outline-secondary" title="Reset pencarian">
+                              <i class="bi bi-x-lg"></i>
+                            </a>
+                          @endif
+                        </div>
+                      </form>
                       <button type="button" class="btn btn-primary btn-sm"
                               data-bs-toggle="modal" data-bs-target="#createUserModal">
                         <i class="bi bi-plus-lg"></i> Tambah User
@@ -82,7 +102,13 @@
                             </tr>
                           @empty
                             <tr>
-                              <td colspan="5" class="text-center text-muted py-4">Belum ada data user.</td>
+                              <td colspan="5" class="text-center text-muted py-4">
+                                @if ($search !== '')
+                                  Tidak ada user yang sesuai dengan pencarian "{{ $search }}".
+                                @else
+                                  Belum ada data user.
+                                @endif
+                              </td>
                             </tr>
                           @endforelse
                         </tbody>

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Excel as ExcelFormat;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -19,9 +20,10 @@ class ProductReportController extends Controller
         $validated = $this->validatedFilters($request);
         $categoryId = isset($validated['category_id']) ? (int) $validated['category_id'] : null;
         $stockStatus = $validated['stock_status'] ?? 'all';
+        $search = trim($validated['search'] ?? '');
 
         // Query yang sama digunakan untuk ringkasan, tabel, dan export.
-        $productsQuery = $this->productsQuery($categoryId, $stockStatus);
+        $productsQuery = $this->productsQuery($categoryId, $stockStatus, $search);
 
         $totalProducts = (clone $productsQuery)->count();
         $totalStock = (clone $productsQuery)->sum('stock');
@@ -48,30 +50,45 @@ class ProductReportController extends Controller
             'outOfStockProducts',
             'potentialStockValue',
             'categoryId',
-            'stockStatus'
+            'stockStatus',
+            'search'
         ));
     }
 
-    /** Unduh seluruh data yang cocok dengan filter, bukan hanya halaman aktif. */
+    /** Unduh seluruh data produk yang cocok dengan filter dalam format Excel. */
     public function export(Request $request): BinaryFileResponse
+    {
+        return $this->downloadExport($request, false);
+    }
+
+    /** Unduh seluruh data produk yang cocok dengan filter dalam format CSV. */
+    public function exportCsv(Request $request): BinaryFileResponse
+    {
+        return $this->downloadExport($request, true);
+    }
+
+    private function downloadExport(Request $request, bool $asCsv): BinaryFileResponse
     {
         $validated = $this->validatedFilters($request);
         $categoryId = isset($validated['category_id']) ? (int) $validated['category_id'] : null;
         $stockStatus = $validated['stock_status'] ?? 'all';
+        $search = trim($validated['search'] ?? '');
 
         $categoryName = $categoryId
             ? Category::query()->whereKey($categoryId)->value('name')
             : null;
 
-        $query = $this->productsQuery($categoryId, $stockStatus)
+        $query = $this->productsQuery($categoryId, $stockStatus, $search)
             ->orderBy('name')
             ->orderBy('id');
 
-        $filename = 'laporan-produk-' . now()->format('Ymd-His') . '.xlsx';
+        $extension = $asCsv ? 'csv' : 'xlsx';
+        $filename = 'laporan-produk-' . now()->format('Ymd-His') . '.' . $extension;
 
         return Excel::download(
-            new ProductsExport($query, $categoryName, $stockStatus),
-            $filename
+            new ProductsExport($query, $categoryName, $stockStatus, $asCsv, $search),
+            $filename,
+            $asCsv ? ExcelFormat::CSV : ExcelFormat::XLSX
         );
     }
 
@@ -80,14 +97,16 @@ class ProductReportController extends Controller
         return $request->validate([
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'stock_status' => ['nullable', 'in:all,available,out_of_stock'],
+            'search' => ['nullable', 'string', 'max:100'],
         ], [
             'category_id.integer' => 'Kategori tidak valid.',
             'category_id.exists' => 'Kategori yang dipilih tidak ditemukan.',
             'stock_status.in' => 'Filter ketersediaan stok tidak valid.',
+            'search.max' => 'Pencarian maksimal 100 karakter.',
         ]);
     }
 
-    private function productsQuery(?int $categoryId, string $stockStatus): Builder
+    private function productsQuery(?int $categoryId, string $stockStatus, string $search = ''): Builder
     {
         $query = Product::query()->with('category:id,name');
 
@@ -99,6 +118,16 @@ class ProductReportController extends Controller
             $query->where('stock', '>', 0);
         } elseif ($stockStatus === 'out_of_stock') {
             $query->where('stock', 0);
+        }
+
+        if ($search !== '') {
+            $query->where(function ($builder) use ($search) {
+                $builder->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($categoryQuery) use ($search) {
+                        $categoryQuery->where('name', 'like', "%{$search}%");
+                    });
+            });
         }
 
         return $query;

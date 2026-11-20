@@ -21,8 +21,11 @@ class TransactionsExport extends StyledReportExport implements
     public function __construct(
         private Builder $query,
         private ?string $startDate = null,
-        private ?string $endDate = null
+        private ?string $endDate = null,
+        bool $forCsv = false,
+        private string $search = ''
     ) {
+        $this->forCsv = $forCsv;
     }
 
     public function query(): Builder
@@ -52,7 +55,9 @@ class TransactionsExport extends StyledReportExport implements
         return [
             ++$this->rowNumber,
             $order->invoice_number,
-            Date::dateTimeToExcel($order->created_at),
+            $this->forCsv
+                ? ($order->created_at?->format('d/m/Y H:i') ?? '-')
+                : Date::dateTimeToExcel($order->created_at),
             $order->member?->name ?? 'Pembeli umum',
             (int) $order->items->sum('quantity'),
             $total,
@@ -63,6 +68,10 @@ class TransactionsExport extends StyledReportExport implements
 
     public function columnFormats(): array
     {
+        if ($this->forCsv) {
+            return [];
+        }
+
         return [
             'C' => 'dd/mm/yyyy hh:mm',
             'E' => '#,##0;[Red](#,##0);-',
@@ -99,17 +108,23 @@ class TransactionsExport extends StyledReportExport implements
     protected function filterDescription(): string
     {
         if ($this->startDate === null && $this->endDate === null) {
-            return 'Semua periode';
+            $period = 'Semua periode';
+        } else {
+            $start = $this->startDate
+                ? Carbon::parse($this->startDate)->format('d/m/Y')
+                : 'Tidak dibatasi';
+            $end = $this->endDate
+                ? Carbon::parse($this->endDate)->format('d/m/Y')
+                : 'Tidak dibatasi';
+
+            $period = "Periode {$start} sampai {$end}";
         }
 
-        $start = $this->startDate
-            ? Carbon::parse($this->startDate)->format('d/m/Y')
-            : 'Tidak dibatasi';
-        $end = $this->endDate
-            ? Carbon::parse($this->endDate)->format('d/m/Y')
-            : 'Tidak dibatasi';
+        if ($this->search !== '') {
+            return "{$period} | Pencarian: {$this->search}";
+        }
 
-        return "Periode {$start} sampai {$end}";
+        return $period;
     }
 
     protected function lastColumn(): string

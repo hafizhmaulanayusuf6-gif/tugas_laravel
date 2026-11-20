@@ -31,6 +31,28 @@
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Pilih Produk</h3>
+                    <div class="card-tools d-flex flex-wrap align-items-center gap-2">
+                      <form method="GET" action="{{ route('orders.index') }}" class="d-flex align-items-center">
+                        <div class="input-group input-group-sm" style="width: 240px;">
+                          <input
+                            type="search"
+                            name="search"
+                            class="form-control"
+                            placeholder="Cari produk atau kategori..."
+                            value="{{ $search }}"
+                            aria-label="Cari produk"
+                          >
+                          <button type="submit" class="btn btn-outline-secondary" title="Cari">
+                            <i class="bi bi-search"></i>
+                          </button>
+                          @if ($search !== '')
+                            <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary" title="Reset pencarian">
+                              <i class="bi bi-x-lg"></i>
+                            </a>
+                          @endif
+                        </div>
+                      </form>
+                    </div>
                   </div>
                   <div class="card-body">
                     <div class="row g-3" id="productGrid">
@@ -70,8 +92,12 @@
                         </div>
                       @empty
                         <div class="col-12 text-center text-muted py-4">
-                          Belum ada produk. Tambahkan dulu di
-                          <a href="{{ route('products.index') }}">Master Data â†’ Products</a>.
+                          @if ($search !== '')
+                            Tidak ada produk yang sesuai dengan pencarian "{{ $search }}".
+                          @else
+                            Belum ada produk. Tambahkan dulu di
+                            <a href="{{ route('products.index') }}">Master Data &rarr; Products</a>.
+                          @endif
                         </div>
                       @endforelse
                     </div>

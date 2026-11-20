@@ -32,7 +32,10 @@
         </div>
         <div class="card-body">
           <form method="GET" action="{{ route('reports.products') }}" class="row g-3 align-items-end">
-            <div class="col-md-5">
+            @if ($search !== '')
+              <input type="hidden" name="search" value="{{ $search }}">
+            @endif
+            <div class="col-md-6 col-xl">
               <label for="category_id" class="form-label">Kategori</label>
               <select name="category_id" id="category_id" class="form-select">
                 <option value="">Semua Kategori</option>
@@ -43,7 +46,7 @@
                 @endforeach
               </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6 col-xl">
               <label for="stock_status" class="form-label">Ketersediaan Stok</label>
               <select name="stock_status" id="stock_status" class="form-select">
                 <option value="all" @selected($stockStatus === 'all')>Semua Status</option>
@@ -51,11 +54,23 @@
                 <option value="out_of_stock" @selected($stockStatus === 'out_of_stock')>Stok Habis</option>
               </select>
             </div>
-            <div class="col-md-3 d-flex gap-2">
+            <div class="col-12 col-xl-auto d-flex flex-wrap gap-2">
               <button type="submit" class="btn btn-primary">
                 <i class="bi bi-filter me-1"></i> Terapkan
               </button>
               <a href="{{ route('reports.products') }}" class="btn btn-outline-secondary">Reset</a>
+              <a
+                href="{{ route('reports.products.export', request()->only('category_id', 'stock_status', 'search')) }}"
+                class="btn btn-success"
+              >
+                <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+              </a>
+              <a
+                href="{{ route('reports.products.export.csv', request()->only('category_id', 'stock_status', 'search')) }}"
+                class="btn btn-outline-success"
+              >
+                <i class="bi bi-filetype-csv me-1"></i> Export CSV
+              </a>
             </div>
           </form>
         </div>
@@ -115,22 +130,43 @@
       <div class="row">
         <div class="col-12">
           <div class="card">
-            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="card-header">
               <h3 class="card-title">Daftar Produk</h3>
               <div class="card-tools d-flex flex-wrap align-items-center gap-2">
                 <span class="text-muted small">
-                  @if ($categoryId || $stockStatus !== 'all')
+                  @if ($categoryId || $stockStatus !== 'all' || $search !== '')
                     Hasil sesuai filter yang dipilih
                   @else
                     Semua Produk
                   @endif
                 </span>
-                <a
-                  href="{{ route('reports.products.export', request()->only('category_id', 'stock_status')) }}"
-                  class="btn btn-sm btn-success"
-                >
-                  <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
-                </a>
+                <form method="GET" action="{{ route('reports.products') }}" class="d-flex align-items-center">
+                  @if ($categoryId)
+                    <input type="hidden" name="category_id" value="{{ $categoryId }}">
+                  @endif
+                  @if ($stockStatus !== 'all')
+                    <input type="hidden" name="stock_status" value="{{ $stockStatus }}">
+                  @endif
+                  <div class="input-group input-group-sm" style="width: 240px;">
+                    <input
+                      type="search"
+                      name="search"
+                      class="form-control"
+                      placeholder="Cari produk atau kategori..."
+                      value="{{ $search }}"
+                      aria-label="Cari produk"
+                    >
+                    <button type="submit" class="btn btn-outline-secondary" title="Cari">
+                      <i class="bi bi-search"></i>
+                    </button>
+                    @if ($search !== '')
+                      <a href="{{ route('reports.products', request()->only('category_id', 'stock_status')) }}"
+                         class="btn btn-outline-secondary" title="Reset pencarian">
+                        <i class="bi bi-x-lg"></i>
+                      </a>
+                    @endif
+                  </div>
+                </form>
               </div>
             </div>
             <div class="card-body p-0">
@@ -167,8 +203,8 @@
                     @empty
                       <tr>
                         <td colspan="7" class="text-center text-muted py-4">
-                          @if ($categoryId || $stockStatus !== 'all')
-                            Tidak ada produk yang sesuai dengan filter.
+                          @if ($categoryId || $stockStatus !== 'all' || $search !== '')
+                            Tidak ada produk yang sesuai dengan filter atau pencarian.
                           @else
                             Belum ada data produk.
                           @endif
